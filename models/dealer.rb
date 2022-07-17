@@ -36,7 +36,7 @@ class Dealer < Person
 
   def open_hand
     result = []
-    @hand.each { |card| result << "#{card.name}#{card.suit}"}
+    @hand.each { |card| result << "#{card.name}#{card.suit}" }
 
     result
   end
