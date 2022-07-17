@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../utils/utils'
+
 # Base class for participants
 class Person
   attr_reader :money
@@ -36,21 +38,16 @@ class Person
 
   def calculate_points
     sum = 0
-    ace_count = 0
+    aces_amount = 0
     @hand.each do |card|
       if card.name == 'A'
-        ace_count += 1
+        aces_amount += 1
         next
       end
       sum += card.value
     end
 
-    while ace_count >= 1
-      sum += sum <= 10 ? 11 : 1
-      ace_count -= 1
-    end
-
-    @points = sum
+    @points = ace_counter(aces_amount, sum)
   end
 
   def show_hand
