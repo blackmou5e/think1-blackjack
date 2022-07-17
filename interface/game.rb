@@ -14,12 +14,10 @@ class Game
 
   def main
     print 'Enter your name: '
-    name = gets.chomp
-    player = Player.new(name, @starting_money)
+    player = Player.new(gets.chomp, @starting_money)
     dealer = Dealer.new(@starting_money)
 
-    collect_bets(dealer, player)
-    initial_deal(dealer, player)
+    game_init(dealer, player)
 
     loop do
       show_current_score(dealer, player)
@@ -35,61 +33,16 @@ class Game
 
       break unless play_again?
 
-      player.free_hand
-      dealer.free_hand
-
-      collect_bets(dealer, player)
-      initial_deal(dealer, player)
+      game_init(dealer, player)
     end
   end
 
-  def play_again?
-    print 'Play again? (y/n) '
-    case gets.chomp
-    when 'y'
-      true
-    when 'n'
-      false
-    end
-  end
+  def game_init(dealer, player)
+    dealer.free_hand
+    player.free_hand
 
-  def choose_winner(dealer, player)
-    dealer_points = dealer.open_points
-    player_points = player.show_points
-
-    if dealer_points > 21 && player_points > 21
-      dealer.take_prize(10)
-      player.take_prize(10)
-      puts 'Draw!'
-    elsif dealer_points > 21
-      player.take_prize(20)
-      puts 'You won!'
-    elsif player_points > 21
-      dealer.take_prize(20)
-      puts 'You lose!'
-    elsif player_points > dealer_points
-      player.take_prize(20)
-      puts 'You won!'
-    elsif dealer_points > player_points
-      dealer.take_prize(20)
-      puts 'You lose!'
-    else
-      player.take_prize(10)
-      dealer.take_prize(10)
-      puts 'Draw!'
-    end
-
-    @pot = 0
-  end
-
-  def show_current_score(dealer, player)
-    puts "Dealer:\nHand: #{dealer.show_masked_hand}\tPoints: **\n"
-    puts "Player:\nMoney: #{player.money}\tHand: #{player.show_hand}\tPoints: #{player.show_points}"
-  end
-
-  def show_result(dealer, player)
-    puts "Dealer:\nHand: #{dealer.open_hand}\tPoints: #{dealer.open_points}\n"
-    puts "Player:\nMoney: #{player.money}\tHand: #{player.show_hand}\tPoints: #{player.show_points}"
+    collect_bets(dealer, player)
+    initial_deal(dealer, player)
   end
 
   def initial_deal(dealer, player)
@@ -102,6 +55,11 @@ class Game
   def collect_bets(dealer, player)
     @pot += dealer.make_bet
     @pot += player.make_bet
+  end
+
+  def show_current_score(dealer, player)
+    puts "Dealer:\nHand: #{dealer.show_masked_hand}\tPoints: **\n"
+    puts "Player:\nMoney: #{player.money}\tHand: #{player.show_hand}\tPoints: #{player.show_points}"
   end
 
   def player_turn(dealer, player)
@@ -126,5 +84,39 @@ class Game
 
   def game_finished?(dealer)
     dealer.count_cards_in_game >= 5
+  end
+
+  def show_result(dealer, player)
+    puts "Dealer:\nHand: #{dealer.open_hand}\tPoints: #{dealer.open_points}\n"
+    puts "Player:\nMoney: #{player.money}\tHand: #{player.show_hand}\tPoints: #{player.show_points}"
+  end
+
+  def choose_winner(dealer, player)
+    dealer_points = dealer.open_points
+    player_points = player.show_points
+
+    if (dealer_points > 21 && player_points > 21) || (dealer_points == player_points)
+      dealer.take_prize(10)
+      player.take_prize(10)
+      puts 'Draw!'
+    elsif dealer_points > 21 || player_points > dealer_points
+      player.take_prize(20)
+      puts 'You won!'
+    elsif player_points > 21 || dealer_points > player_points
+      dealer.take_prize(20)
+      puts 'You lose!'
+    end
+
+    @pot = 0
+  end
+
+  def play_again?
+    print 'Play again? (y/n) '
+    case gets.chomp
+    when 'y'
+      true
+    when 'n'
+      false
+    end
   end
 end
