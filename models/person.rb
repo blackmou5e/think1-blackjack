@@ -52,9 +52,6 @@ class Person
 
     @points = sum
   end
-  # sum = 0
-  # @hand.each { |card| sum += card.value }
-  # @points = sum
 
   def show_hand
     @hand
