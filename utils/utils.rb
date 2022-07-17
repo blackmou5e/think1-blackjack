@@ -37,3 +37,13 @@ def value_by_name(name)
     name.to_i
   end
 end
+
+def ace_counter(amount, sum)
+  result = sum
+  while amount >= 1
+    result += result <= 10 ? 11 : 1
+    amount -= 1
+  end
+
+  result
+end
