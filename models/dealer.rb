@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'person'
-require_relative 'utils/utils'
+require_relative '../utils/utils'
 
 # Class for Dealer
 class Dealer < Person
